@@ -12,12 +12,13 @@ the cnn model and clustering ussing kmeans and hdbscan.
 While it is a tight race , the best model is the cnn model using pretrained layers from the VGG-16 which is trained on imagenet. The code for the the model can be seen 
 here : 
 ```python
+#importing packages
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.applications.vgg16 import VGG16
-
+#checking if gpu is avalaible
 if tf.test.is_gpu_available():
     print('GPU available:')
     for gpu in tf.config.list_physical_devices('GPU'):
@@ -25,7 +26,7 @@ if tf.test.is_gpu_available():
     tf.config.set_visible_devices(gpu, 'GPU')
 else:
     print('No GPU available.')
-
+#loading in dicom and labels
 dicom_array = df
 labels = one_hot_encoded_list
 dicom_array = np.repeat(dicom_array, 3, axis=-1)
@@ -50,7 +51,7 @@ base_model = VGG16(
 
 for layer in base_model.layers:
     layer.trainable = True
-
+#creating model
 input_layer = layers.Input(shape=input_shape, name="input")
 x = layers.TimeDistributed(base_model)(input_layer)
 x = layers.Conv3D(64, kernel_size=(1, 3, 3), activation='relu', padding='same')(x)
